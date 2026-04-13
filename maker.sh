@@ -33,7 +33,6 @@ help() {
 case "$1" in
     build) build ;;
     release) release ;;
-    winbuild) winbuild ;;
     clean) clean ;;
     *) help ;;
 esac
