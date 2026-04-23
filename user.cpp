@@ -161,6 +161,13 @@ void MoveCameraTowards(Context &ctx, Object &obj, float dt) {}
 // Ваше решение может сильно отличаться.
 //
 bool CheckPlayerDeath(Object &player, Scene &scene) {
+    for (auto &obj : scene) {
+        if (obj.enemy.enabled) {
+            if (CheckCollision(obj, player).exists) {
+                return true;
+            }
+        }
+    }
     return false;
 }
 
