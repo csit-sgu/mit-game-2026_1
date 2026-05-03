@@ -47,20 +47,22 @@ Collision CheckCollision(Object &obj1, Object &obj2) {
 // Ваше решение может сильно отличаться.
 //
 void SolveCollision(Object &obj, Collision c, float dt) {
-    if (std::abs(c.overlap.x) > std::abs(c.overlap.y)) {
-        obj.position.y+=c.overlap.x;
-    }
-    else {
-        obj.position.x+=c.overlap.x;
-    }
-    if (c.overlap.y > 0) {
-        obj.physics.speed.y = 0;
-    }
-    if (c.overlap.y < 0) {
-        obj.physics.acceleration.y = 0;
-        obj.physics.speed.y = 0;
-        if (obj.physics.speed.y < 0) {
-            obj.physics.can_jump = true;
+    if (c.exists) {
+        if (std::abs(c.overlap.x) > std::abs(c.overlap.y)) {
+            obj.position.x+=c.overlap.x;
+        }
+        else {
+            obj.position.y+=c.overlap.y;
+        }
+        if (c.overlap.y > 0) {
+            obj.physics.speed.y = 0;
+        }
+        if (c.overlap.y < 0) {
+            obj.physics.acceleration.y = 0;
+            if (obj.physics.speed.y < 0) {
+                obj.physics.can_jump = true;
+            }
+            obj.physics.speed.y = 0;
         }
     }
 }
