@@ -389,7 +389,17 @@ void KillEnemies(Context &ctx) {}
 //
 // Возможное решение может занимать примерно 6-8 строк.
 //
-void ApplyOnDeath(Context &ctx, Object &obj) {}
+void ApplyOnDeath(Context &ctx, Object &obj) {
+    if (obj.player.enabled) {
+       Sound sound_death = LoadSound("Assets/Sounds/death.mp3");
+       PlaySound(sound_death);
+       UnloadSound(sound_death);
+    } else if (obj.enemy.enabled) {
+        Sound sound_death = LoadSound("Assets/Sounds/enemy_death.mp3");
+        PlaySound(sound_death);
+        UnloadSound(sound_death);
+    }
+}
 
 // Задание ApplyOnSpawn.
 //
