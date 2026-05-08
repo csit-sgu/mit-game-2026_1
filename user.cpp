@@ -440,24 +440,24 @@ void DrawDeathScreen(Context &ctx) {
     int titleWidth = MeasureText(title, titleSize);
     DrawText(title, (sw - titleWidth) / 2, sh / 2 - 70, titleSize, Color{200, 30, 30, 255});
 
-    DrawText(title, (sw - titleWidth) / 2 + 3, sh / 2 - 67, titleSize, Color{80, 0, 0, 180});
+    DrawText(title, (sw - titleWidth) / 2 + 3, sh / 2 - 55, titleSize, Color{80, 0, 0, 180});
 
-    if (ctx.lives > 0) {
+    if(ctx.lives > 0) {
         const char *sub = TextFormat("Lives remaining: %d   |   Press R to respawn", ctx.lives);
         int subSize = 22;
         int subWidth = MeasureText(sub, subSize);
         DrawText(sub, (sw - subWidth) / 2, sh / 2 + 30, subSize, Color{220, 180, 180, 255});
-    } else {
-        const char *sub = "No lives left...";
+    }
+    else{
+        const char *sub = "No lives left...loser";
         int subSize = 22;
         int subWidth = MeasureText(sub, subSize);
         DrawText(sub, (sw - subWidth) / 2, sh / 2 + 30, subSize, Color{180, 100, 100, 255});
     }
-
     const char *scoreText = TextFormat("Score: %d", ctx.score);
     int scoreSize = 20;
     int scoreWidth = MeasureText(scoreText, scoreSize);
-    DrawText(scoreText, (sw - scoreWidth) / 2, sh / 2 + 65, scoreSize, Color{200, 200, 200, 200});
+    DrawText(scoreText, (sw - scoreWidth) / 2, sh / 2 + 50, scoreSize, Color{200, 200, 200, 200});
 }
 
 // Задание DrawGameOverScreen.
