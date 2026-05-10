@@ -49,10 +49,10 @@ Collision CheckCollision(Object &obj1, Object &obj2) {
 void SolveCollision(Object &obj, Collision c, float dt) {
     if (c.exists) {
         if (std::abs(c.overlap.x) > std::abs(c.overlap.y)) {
-            obj.position.x+=c.overlap.x;
+            obj.position.x-=c.overlap.x;
         }
         else {
-            obj.position.y+=c.overlap.y;
+            obj.position.y-=c.overlap.y;
         }
         if (c.overlap.y > 0) {
             obj.physics.speed.y = 0;
