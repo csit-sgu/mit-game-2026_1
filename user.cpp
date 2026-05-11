@@ -427,7 +427,30 @@ void ApplyOnSpawn(Context &ctx, Object &obj) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void DrawDeathScreen(Context &ctx) {}
+void DrawDeathScreen(Context &ctx) {
+    int sw = (int)ctx.screen_size.x;
+    int sh = (int)ctx.screen_size.y;
+
+    DrawRectangle(0, 0, sw, sh, Color{20, 0, 0, 200});
+
+    DrawRectangle(0, sh / 2 - 80, sw, 160, Color{80, 0, 0, 180});
+
+    const char *title = "YOU DIED";
+    int titleSize = 72;
+    int titleWidth = MeasureText(title, titleSize);
+    DrawText(title, (sw - titleWidth) / 2, sh / 2 - 70, titleSize, Color{200, 30, 30, 255});
+
+    DrawText(title, (sw - titleWidth) / 2 + 3, sh / 2 - 55, titleSize, Color{80, 0, 0, 180});
+
+    const char *sub = TextFormat("Lives remaining: %d   |   Press R to respawn", ctx.lives);
+    int subSize = 22;
+    int subWidth = MeasureText(sub, subSize);
+    DrawText(sub, (sw - subWidth) / 2, sh / 2 + 30, subSize, Color{220, 180, 180, 255});
+    const char *scoreText = TextFormat("Score: %d", ctx.score);
+    int scoreSize = 20;
+    int scoreWidth = MeasureText(scoreText, scoreSize);
+    DrawText(scoreText, (sw - scoreWidth) / 2, sh / 2 + 50, scoreSize, Color{200, 200, 200, 200});
+}
 
 // Задание DrawGameOverScreen.
 //
