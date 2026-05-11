@@ -110,20 +110,18 @@ void FixCollisions(Scene &scene, float dt) {}
 // Ваше решение может сильно отличаться.
 //
 void ApplyGravity(Object &obj, float dt) {
-    void ApplyGravity(Object & obj, float dt) {
-        if (obj.physics.enabled && obj.collider.of_type(ColliderType::DYNAMIC))
-        {
-            obj.physics.acceleration.y -= GRAVITY / (dt * dt);
-            obj.physics.speed += obj.physics.acceleration * dt;
+    Physics &p = obj.physics;
+    if (p.enabled && obj.collider.of_type(ColliderType::DYNAMIC)) {
+        p.acceleration.y -= GRAVITY * (dt * dt);  //
+        p.speed += p.acceleration;
 
-            const float MAX_FALL_SPEED = -200.0f;
+        const float MAX_FALL_SPEED = -200.0f;
 
-            if (std::abs(obj.physics.speed.y) >= std::abs(MAX_FALL_SPEED)) {
-                obj.physics.acceleration.y = 0.0f;
-                obj.physics.speed.y = MAX_FALL_SPEED;
-            }
-            obj.position = Vector2Add(obj.position, obj.physics.speed * dt);
+        if (std::abs(obj.physics.speed.y) >= std::abs(MAX_FALL_SPEED)) {
+            p.acceleration.y = 0.0f;
+            p.speed.y = MAX_FALL_SPEED;
         }
+        obj.position = Vector2Add(obj.position, p.speed * dt);
     }
 }
 
