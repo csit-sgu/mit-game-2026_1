@@ -109,7 +109,21 @@ void FixCollisions(Scene &scene, float dt) {}
 // Возможное решение может занимать примерно 8-9 строки.
 // Ваше решение может сильно отличаться.
 //
-void ApplyGravity(Object &obj, float dt) {}
+void ApplyGravity(Object &obj, float dt) {
+    Physics &p = obj.physics;
+    if (p.enabled && obj.collider.of_type(ColliderType::DYNAMIC)) {
+        p.acceleration.y -= GRAVITY * (dt * dt);  //
+        p.speed += p.acceleration;
+
+        const float MAX_FALL_SPEED = -200.0f;
+
+        if (std::abs(obj.physics.speed.y) >= std::abs(MAX_FALL_SPEED)) {
+            p.acceleration.y = 0.0f;
+            p.speed.y = MAX_FALL_SPEED;
+        }
+        obj.position = Vector2Add(obj.position, p.speed * dt);
+    }
+}
 
 // Задание MakeJump.
 //
