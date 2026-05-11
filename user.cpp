@@ -533,32 +533,14 @@ void DrawMainScreen(Context &ctx) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void ConstructMenuScene(Context &ctx, Scene &game_scene) {}
+void ConstructMenuScene(Context &ctx, Scene &game_scene) {
+    Object bg;
+    bg.render = Render(ctx, "Assets/menu_background.png", {0, 0});
+    bg.render.width = ctx.screen_size.x;
+    bg.render.height = ctx.screen_size.y;
+    bg.render.visible = true;
+    game_scene.push_back(bg);
+}
 
-// Задание DrawStatus.
-//
-// Функция рисует панель сверху экрана со статусом игры. Свобода фантазии!
-//
-// В самой панели должны отображаться следующие параметры:
-// - Количество жизней игрока. Для этого следует использовать текстуру
-//   сердечка, которая сохранена в контексте игры.
-//   Для того, чтобы получить саму текстуру сердца можно написать
-//     Texture heart_texture = ctx.textures_storage[ctx.heart->hash];
-//   После этого текстуру можно использовать функцию DrawTexture.
-// - Текущий счёт игрока. Он хранится в поле ctx.score.
-// - Время с начала игры. Оно хранится в поле ctx.time в миллисекундах (!!!)
-//   Желательно выводить время отдельно в минутах и секундах.
-//
-// Рекомендуемые функции для выполнения задания:
-// - Конструктор класса Render
-// - DrawRectangle
-// - DrawText
-// - MeasureText
-// - DrawTexture
-//
-// При выполнении этого задания у вас есть возможность добавить текстуру
-// сердечка Assets/heart.png
-//
-// Возможное решение может занимать примерно N строк.
-//
+
 void DrawStatus(Context &ctx) {}
