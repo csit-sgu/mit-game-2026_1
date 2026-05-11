@@ -1,5 +1,6 @@
 #include "user.hpp"
 #include "internal.hpp"
+#include <string>
 
 #include <raymath.h>
 #include <raylib.h>
@@ -534,13 +535,52 @@ void DrawMainScreen(Context &ctx) {}
 // Возможное решение может занимать примерно N строк.
 //
 void ConstructMenuScene(Context &ctx, Scene &game_scene) {
+    // Фон
     Object bg;
     bg.render = Render(ctx, "Assets/menu_background.png", {0, 0});
     bg.render.width = ctx.screen_size.x;
     bg.render.height = ctx.screen_size.y;
     bg.render.visible = true;
     game_scene.push_back(bg);
+
+    // Декоративные сердечки
+    for (int i = 0; i < 5; i++) {
+        Object heart;
+        heart.render = Render(
+            ctx,
+            "Assets/heart.png",
+            {50.0f + i * 100.0f, ctx.screen_size.y - 60}
+        );
+        heart.render.width = 40;
+        heart.render.height = 40;
+        heart.render.visible = true;
+        game_scene.push_back(heart);
+    }
 }
 
 
-void DrawStatus(Context &ctx) {}
+void DrawStatus(Context &ctx) {
+    int screenWidth = (int) ctx.screen_size.x;
+
+    // Панель вверху
+    DrawRectangle(0, 0, screenWidth, 80, Color{0, 0, 0, 200});
+
+    // Сердечки (жизни)
+    Texture heartTexture = ctx.textures_storage[ctx.heart->hash];
+    for (int i = 0; i < ctx.lives; i++) {
+        DrawTexture(heartTexture, 20 + i * 50, 20, WHITE);
+    }
+
+    // Счёт
+    std::string scoreText = "Score: " + std::to_string(ctx.score);
+    DrawText(scoreText.c_str(), screenWidth / 2 - 50, 30, 30, YELLOW);
+
+    // Время
+    uint64_t secondsTotal = ctx.time / 1000;
+    int minutes = secondsTotal / 60;
+    int seconds = secondsTotal % 60;
+    std::string timeText = std::to_string(minutes) + ":"
+                         + (seconds < 10 ? "0" + std::to_string(seconds)
+                                         : std::to_string(seconds));
+    DrawText(timeText.c_str(), screenWidth - 100, 30, 25, WHITE);
+}
