@@ -459,14 +459,14 @@ void DrawGameOverScreen(Context &ctx) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void DrawFinishScreen(Context &ctx) {
-    DrawRectangle(0, 0, ctx.screen_size.x, ctx.screen_size.y, BLACK);
+void DrawFinishScreen(Context& ctx){
     const char* text = "LEVEL COMPLETE!";
-    int fontSize = 40;
-    int textWidth = MeasureText(text, fontSize);
-    int x = ctx.screen_size.x / 2 - textWidth / 2;
-    int y = ctx.screen_size.y / 2 - fontSize / 2;
-    DrawText(text, x, y, fontSize, WHITE);
+    float fontSize = 40.0f;
+    float textWidth = (float)MeasureText(text, (int)fontSize);
+    float x = ctx.screen_size.x / 2.0f - textWidth / 2.0f;
+    float y = ctx.screen_size.y / 2.0f - fontSize / 2.0f;
+    DrawRectangle(0, 0, ctx.screen_size.x, ctx.screen_size.y, BLACK);
+    DrawText(text, (int)x, (int)y, (int)fontSize, WHITE);
 }
 
 // Задание DrawMainScreen.
