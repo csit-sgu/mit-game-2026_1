@@ -448,12 +448,6 @@ void DrawDeathScreen(Context &ctx) {
         int subWidth = MeasureText(sub, subSize);
         DrawText(sub, (sw - subWidth) / 2, sh / 2 + 30, subSize, Color{220, 180, 180, 255});
     }
-    else{
-        const char *sub = "No lives left...loser";
-        int subSize = 22;
-        int subWidth = MeasureText(sub, subSize);
-        DrawText(sub, (sw - subWidth) / 2, sh / 2 + 30, subSize, Color{180, 100, 100, 255});
-    }
     const char *scoreText = TextFormat("Score: %d", ctx.score);
     int scoreSize = 20;
     int scoreWidth = MeasureText(scoreText, scoreSize);
