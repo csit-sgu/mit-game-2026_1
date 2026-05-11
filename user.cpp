@@ -442,12 +442,10 @@ void DrawDeathScreen(Context &ctx) {
 
     DrawText(title, (sw - titleWidth) / 2 + 3, sh / 2 - 55, titleSize, Color{80, 0, 0, 180});
 
-    if(ctx.lives > 0) {
-        const char *sub = TextFormat("Lives remaining: %d   |   Press R to respawn", ctx.lives);
-        int subSize = 22;
-        int subWidth = MeasureText(sub, subSize);
-        DrawText(sub, (sw - subWidth) / 2, sh / 2 + 30, subSize, Color{220, 180, 180, 255});
-    }
+    const char *sub = TextFormat("Lives remaining: %d   |   Press R to respawn", ctx.lives);
+    int subSize = 22;
+    int subWidth = MeasureText(sub, subSize);
+    DrawText(sub, (sw - subWidth) / 2, sh / 2 + 30, subSize, Color{220, 180, 180, 255});
     const char *scoreText = TextFormat("Score: %d", ctx.score);
     int scoreSize = 20;
     int scoreWidth = MeasureText(scoreText, scoreSize);
