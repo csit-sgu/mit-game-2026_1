@@ -328,7 +328,16 @@ void PlayerControl(Context &ctx, Object &player, float dt) {
 //
 // Возможное решение может занимать примерно 8-10 строк.
 //
-void ShootBullet(Context &ctx, Object &player, float dt) {}
+void ShootBullet(Context &ctx, Object &player, float dt) {
+    Object bullet;
+    bullet.position = player.position;
+    bullet.render = Render(ctx, "Assets/bullet.png");
+    bullet.collider = Collider(bullet.render, {ColliderType::EVENT});
+    float speedX
+        = (player.player.direction == Direction::RIGHT) ? 500.0f : -500.0f;
+    bullet.bullet = Bullet({speedX, 0.0f}, 2.0f);
+    Spawn(ctx, bullet);
+}
 
 // Задание UpdateBullet.
 //
