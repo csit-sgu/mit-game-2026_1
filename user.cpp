@@ -23,7 +23,28 @@
 // Ваше решение может сильно отличаться.
 //
 Collision CheckCollision(Object &obj1, Object &obj2) {
-    return Collision{};
+    double dx = obj2.position.x - obj1.position.x, dy = obj2.position.y - obj1.position.y;
+    double w1 = obj1.render.width;
+    double h1 = obj1.render.height;
+    double w2 = obj2.render.width;
+    double h2 = obj2.render.height;
+    double halfWidthSum = (w1 + w2) / 2.0f;
+    double halfHeightSum = (h1 + h2) / 2.0f;
+
+    double qx = std::abs(dx) - halfWidthSum;
+    float qy = std::abs(dy) - halfHeightSum;
+
+    Collision result;
+    if (qx < 0 && qy < 0) {
+	    result.exists = true;
+	    result.overlap.x = qx;
+	    result.overlap.y = qy;  
+    } else {
+	    result.exists = false;
+	    result.overlap.x = 0;
+	    result.overlap.y = 0;
+    }
+    return result;
 }
 
 // Задание SolveCollision.
