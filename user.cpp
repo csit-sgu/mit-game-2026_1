@@ -365,18 +365,18 @@ void UpdateBullet(Context &ctx, Object &obj, float dt) {}
 // Возможное решение может занимать примерно 14-20 строк.
 //
 void KillEnemies(Context &ctx) {
-    for (auto &obj : ctx.current_scene) {
-        if (!obj.enemy.enabled) {
+    for (Object enemy : ctx.current_scene) {
+        if (!enemy.enemy.enabled) {
             continue;
         }
-        for (auto &obj : ctx.current_scene) {
+        for (Object bullet : ctx.current_scene) {
             if (!bullet.bullet.enabled) {
                 continue;
             }
-            if (CheckCollision(obj.enemy, obj.bullet).exists) {
-                Destroy(ctx, obj.bullet);
-                Destroy(ctx, obj.enemy);
-                ApplyOnDeath(ctx, obj.enemy);
+            if (CheckCollision(enemy, bullet).exists) {
+                Destroy(ctx, bullet);
+                Destroy(ctx, enemy);
+                ApplyOnDeath(ctx, enemy);
             }
         }
     }
