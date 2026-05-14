@@ -373,7 +373,13 @@ void ShootBullet(Context &ctx, Object &player, float dt) {}
 // Возможное решение может занимать примерно 4-5 строк.
 // Ваше решение может сильно отличаться.
 //
-void UpdateBullet(Context &ctx, Object &obj, float dt) {}
+void UpdateBullet(Context &ctx, Object &obj, float dt) {
+    obj.position += obj.bullet.speed * dt;
+    obj.bullet.lifetime += dt;
+    if (obj.bullet.lifetime >= obj.bullet.max_lifetime) {
+        Destroy(ctx, obj);
+    }
+}
 
 // Задание KillEnemies.
 //
