@@ -558,29 +558,31 @@ void ConstructMenuScene(Context &ctx, Scene &game_scene) {
     }
 }
 
+//Задание DrawStatus.
+void DrawStatus(Context &ctx) {}
 
-void DrawStatus(Context &ctx) {
-    int screenWidth = (int) ctx.screen_size.x;
-
-    // Панель вверху
-    DrawRectangle(0, 0, screenWidth, 80, Color{0, 0, 0, 200});
-
-    // Сердечки (жизни)
-    Texture heartTexture = ctx.textures_storage[ctx.heart->hash];
-    for (int i = 0; i < ctx.lives; i++) {
-        DrawTexture(heartTexture, 20 + i * 50, 20, WHITE);
-    }
-
-    // Счёт
-    std::string scoreText = "Score: " + std::to_string(ctx.score);
-    DrawText(scoreText.c_str(), screenWidth / 2 - 50, 30, 30, YELLOW);
-
-    // Время
-    uint64_t secondsTotal = ctx.time / 1000;
-    int minutes = secondsTotal / 60;
-    int seconds = secondsTotal % 60;
-    std::string timeText = std::to_string(minutes) + ":"
-                         + (seconds < 10 ? "0" + std::to_string(seconds)
-                                         : std::to_string(seconds));
-    DrawText(timeText.c_str(), screenWidth - 100, 30, 25, WHITE);
-}
+// Функция рисует панель сверху экрана со статусом игры. Свобода фантазии!
+//
+// В самой панели должны отображаться следующие параметры:
+// - Количество жизней игрока. Для этого следует использовать текстуру
+//   сердечка, которая сохранена в контексте игры.
+//   Для того, чтобы получить саму текстуру сердца можно написать
+//     Texture heart_texture = ctx.textures_storage[ctx.heart->hash];
+//   После этого текстуру можно использовать функцию DrawTexture.
+// - Текущий счёт игрока. Он хранится в поле ctx.score.
+// - Время с начала игры. Оно хранится в поле ctx.time в миллисекундах (!!!)
+//   Желательно выводить время отдельно в минутах и секундах.
+//
+// Рекомендуемые функции для выполнения задания:
+// - Конструктор класса Render
+// - DrawRectangle
+// - DrawText
+// - MeasureText
+// - DrawTexture
+//
+// При выполнении этого задания у вас есть возможность добавить текстуру
+// сердечка Assets/heart.png
+//
+// Возможное решение может занимать примерно N строк.
+//
+    
