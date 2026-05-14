@@ -128,7 +128,21 @@ void FixCollisions(Scene &scene, float dt) {}
 // Возможное решение может занимать примерно 8-9 строки.
 // Ваше решение может сильно отличаться.
 //
-void ApplyGravity(Object &obj, float dt) {}
+void ApplyGravity(Object &obj, float dt) {
+    Physics &p = obj.physics;
+    if (p.enabled && obj.collider.of_type(ColliderType::DYNAMIC)) {
+        p.acceleration.y -= GRAVITY * (dt * dt);  //
+        p.speed += p.acceleration;
+
+        const float MAX_FALL_SPEED = -200.0f;
+
+        if (std::abs(obj.physics.speed.y) >= std::abs(MAX_FALL_SPEED)) {
+            p.acceleration.y = 0.0f;
+            p.speed.y = MAX_FALL_SPEED;
+        }
+        obj.position = Vector2Add(obj.position, p.speed * dt);
+    }
+}
 
 // Задание MakeJump.
 //
@@ -145,7 +159,12 @@ void ApplyGravity(Object &obj, float dt) {}
 // Возможное решение может занимать примерно 3 строки.
 // Ваше решение может сильно отличаться.
 //
-void MakeJump(Object &obj, float dt) {}
+void MakeJump(Object &obj, float dt) {
+    if (obj.physics.can_jump) {
+        obj.physics.speed.y += 7.0f;
+        obj.physics.can_jump = false;
+    }
+}
 
 // Задание MoveCameraTowards.
 //
@@ -180,6 +199,13 @@ void MoveCameraTowards(Context &ctx, Object &obj, float dt) {}
 // Ваше решение может сильно отличаться.
 //
 bool CheckPlayerDeath(Object &player, Scene &scene) {
+    for (auto &obj : scene) {
+        if (obj.enemy.enabled) {
+            if (CheckCollision(obj, player).exists) {
+                return true;
+            }
+        }
+    }
     return false;
 }
 
@@ -261,7 +287,28 @@ void EnemyAI(Object &enemy, Scene &scene, float dt) {}
 // Возможное решение может занимать примерно 16-20 строк.
 // Ваше решение может сильно отличаться.
 //
-void PlayerControl(Context &ctx, Object &player, float dt) {}
+void PlayerControl(Context &ctx, Object &player, float dt) {
+    if (ctx.input_blocked) {
+        return;
+    }
+    if (IsKeyDown(KEY_SPACE)) {
+        MakeJump(player, dt);
+    }
+    if (IsKeyDown(KEY_J)) {
+        ShootBullet(ctx, player, dt);
+    }
+    Vector2 move = {0.0f, 0.0f};
+    if (IsKeyDown(KEY_A)) {
+        move.x -= 1.0f;
+        player.player.direction = Direction::LEFT;
+    }
+    if (IsKeyDown(KEY_D)) {
+        move.x += 1.0f;
+        player.player.direction = Direction::RIGHT;
+    }
+    player.position.x += move.x * player.player.speed * dt;
+    player.position.y += move.y * player.player.speed * dt;
+}
 
 // Задание ShootBullet.
 //
@@ -375,7 +422,17 @@ void KillEnemies(Context &ctx) {}
 //
 // Возможное решение может занимать примерно 6-8 строк.
 //
-void ApplyOnDeath(Context &ctx, Object &obj) {}
+void ApplyOnDeath(Context &ctx, Object &obj) {
+    if (obj.player.enabled) {
+       Sound sound_death = LoadSound("Assets/Sounds/death.mp3");
+       PlaySound(sound_death);
+       UnloadSound(sound_death);
+    } else if (obj.enemy.enabled) {
+        Sound sound_death = LoadSound("Assets/Sounds/enemy_death.mp3");
+        PlaySound(sound_death);
+        UnloadSound(sound_death);
+    }
+}
 
 // Задание ApplyOnSpawn.
 //
@@ -413,7 +470,30 @@ void ApplyOnSpawn(Context &ctx, Object &obj) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void DrawDeathScreen(Context &ctx) {}
+void DrawDeathScreen(Context &ctx) {
+    int sw = (int)ctx.screen_size.x;
+    int sh = (int)ctx.screen_size.y;
+
+    DrawRectangle(0, 0, sw, sh, Color{20, 0, 0, 200});
+
+    DrawRectangle(0, sh / 2 - 80, sw, 160, Color{80, 0, 0, 180});
+
+    const char *title = "YOU DIED";
+    int titleSize = 72;
+    int titleWidth = MeasureText(title, titleSize);
+    DrawText(title, (sw - titleWidth) / 2, sh / 2 - 70, titleSize, Color{200, 30, 30, 255});
+
+    DrawText(title, (sw - titleWidth) / 2 + 3, sh / 2 - 55, titleSize, Color{80, 0, 0, 180});
+
+    const char *sub = TextFormat("Lives remaining: %d   |   Press R to respawn", ctx.lives);
+    int subSize = 22;
+    int subWidth = MeasureText(sub, subSize);
+    DrawText(sub, (sw - subWidth) / 2, sh / 2 + 30, subSize, Color{220, 180, 180, 255});
+    const char *scoreText = TextFormat("Score: %d", ctx.score);
+    int scoreSize = 20;
+    int scoreWidth = MeasureText(scoreText, scoreSize);
+    DrawText(scoreText, (sw - scoreWidth) / 2, sh / 2 + 50, scoreSize, Color{200, 200, 200, 200});
+}
 
 // Задание DrawGameOverScreen.
 //
