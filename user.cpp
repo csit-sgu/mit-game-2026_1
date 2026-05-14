@@ -563,7 +563,7 @@ void ConstructMenuScene(Context &ctx, Scene &game_scene) {}
 //
 void DrawStatus(Context &ctx) {
     int sw = (int)ctx.screen_size.x;
-    int sh = (int)ctx.screen_size.y;
+    int sh = 50;
     DrawRectangle(0, 0, sw, sh, Color{30, 30, 30, 255});
     Texture heart_texture = ctx.textures_storage[ctx.heart->hash];
     int heart_x = 15;
@@ -575,9 +575,10 @@ void DrawStatus(Context &ctx) {
     }
     std::string score_text = "Score: " + std::to_string(ctx.score);
     DrawText(score_text.c_str(), 250, 15, 20, Color{255, 255, 255, 255});
-    int milli_seconds = ctx.time / 1000;
-    int minutes = milli_seconds / 60;
-    int seconds = minutes / 60;
+    int milli_seconds = ctx.time;
+    int seconds = (milli_seconds / 1000) % 60;
+    int minutes = milli_seconds / 60000;
+
     std::string time_text = (seconds < 10) ? "Time: " + std::to_string(minutes) + ":0" + std::to_string(seconds) : "Time: " + std::to_string(minutes) + ":" + std::to_string(seconds);
 
     int tw = MeasureText(time_text.c_str(), 24);
