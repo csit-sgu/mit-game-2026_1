@@ -262,7 +262,21 @@ bool CheckFinish(Object &player, Scene &scene) {
 // Возможное решение может занимать примерно 16-20 строк.
 // Ваше решение может сильно отличаться.
 //
-void EnemyAI(Object &enemy, Scene &scene, float dt) {}
+void EnemyAI(Object &enemy, Scene &scene, float dt) {
+    Object *player = find_player(scene);
+
+    if (!player) {
+        return;
+    }
+
+    float move = enemy.enemy.speed * dt;
+
+    if (enemy.position.x > player->position.x) {
+        enemy.position.x -= move;
+    } else {
+        enemy.position.x += move;
+    }
+}
 
 // Задание PlayerControl.
 //
