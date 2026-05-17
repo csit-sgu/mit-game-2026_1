@@ -183,7 +183,12 @@ void MakeJump(Object &obj, float dt) {
 // Возможное решение может занимать примерно 5 строк.
 // Ваше решение может сильно отличаться.
 //
-void MoveCameraTowards(Context &ctx, Object &obj, float dt) {}
+void MoveCameraTowards(Context &ctx, Object &obj, float dt) {
+	const auto v = obj.position - ctx.camera_pos;
+	if (Vector2Length(v) > 2.0f) {
+		ctx.camera_pos += v * 1.5 * dt;
+	}
+}
 
 // Задание CheckPlayerDeath.
 //
