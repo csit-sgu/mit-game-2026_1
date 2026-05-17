@@ -537,23 +537,14 @@ void DrawMainScreen(Context &ctx) {}
 void ConstructMenuScene(Context &ctx, Scene &game_scene) {
     // Фон
     Object bg;
-    bg.render = Render(ctx, "Assets/menu_background.png", {0, 0});
-    bg.render.width = ctx.screen_size.x;
-    bg.render.height = ctx.screen_size.y;
-    bg.render.visible = true;
+    bg.render = Render(ctx, "Assets/menu_background.png", ctx.screen_size);
     game_scene.push_back(bg);
 
     // Декоративные сердечки
     for (int i = 0; i < 5; i++) {
         Object heart;
-        heart.render = Render(
-            ctx,
-            "Assets/heart.png",
-            {50.0f + i * 100.0f, ctx.screen_size.y - 60}
-        );
-        heart.render.width = 40;
-        heart.render.height = 40;
-        heart.render.visible = true;
+        heart.render = Render(ctx, "Assets/heart.png", {40.0f, 40.0f});
+        heart.position = {50.0f + i * 100.0f, ctx.screen_size.y - 60.0f};
         game_scene.push_back(heart);
     }
 }
