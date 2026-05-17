@@ -334,7 +334,7 @@ void ShootBullet(Context &ctx, Object &player, float dt) {
     bullet.render = Render(ctx, "Assets/bullet.png");
     bullet.collider = Collider(bullet.render, {ColliderType::EVENT});
     float speedX
-        = (player.player.direction == Direction::RIGHT) ? 500.0f : -500.0f;
+        = (player.player.direction == Direction::RIGHT) ? 50.0f : -50.0f;
     bullet.bullet = Bullet({speedX, 0.0f}, 2.0f);
     Spawn(ctx, bullet);
 }
