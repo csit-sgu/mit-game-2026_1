@@ -613,7 +613,29 @@ void DrawFinishScreen(Context& ctx){
 //
 // Возможное решение может занимать примерно N строк.
 //
-void DrawMainScreen(Context &ctx) {}
+void DrawMainScreen(Context &ctx) {
+    int screen_width = (int)ctx.screen_size.x;
+    int screen_height = (int)ctx.screen_size.y;
+
+    DrawRectangle(0, 0, screen_width, screen_height, Color{0, 0, 0, 150});
+
+    const char *game_name = "MIT GAME";
+    int game_name_size = 80;
+    int game_name_width = MeasureText(game_name, game_name_size);
+    DrawText(game_name, (screen_width - game_name_width) / 2, screen_height / 2 - 120, game_name_size, Color{255, 220, 50, 255});
+
+    const char *game_description = "A great adventure awaits!";
+    int description_size = 24;
+    int description_width = MeasureText(game_description, description_size);
+    DrawText(game_description, (screen_width - description_width) / 2, screen_height / 2 - 20, description_size, Color{200, 200, 200, 255});
+
+    if (fmod(GetTime(), 0.5) < 0.25) {
+        const char *start_hint = "Press ENTER to start";
+        int hint_size = 28;
+        int hint_width = MeasureText(start_hint, hint_size);
+        DrawText(start_hint, (screen_width - hint_width) / 2, screen_height / 2 + 60, hint_size, Color{255, 255, 255, 255});
+    }
+}
 
 // Задание ConstructMenuScene.
 //
