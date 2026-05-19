@@ -1,5 +1,6 @@
 #include "user.hpp"
 #include "internal.hpp"
+#include <string>
 
 #include <raymath.h>
 #include <raylib.h>
@@ -628,10 +629,24 @@ void DrawMainScreen(Context &ctx) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void ConstructMenuScene(Context &ctx, Scene &game_scene) {}
+void ConstructMenuScene(Context &ctx, Scene &game_scene) {
+    // Фон
+    Object bg;
+    bg.render = Render(ctx, "Assets/menu_background.png", ctx.screen_size);
+    game_scene.push_back(bg);
 
-// Задание DrawStatus.
-//
+    // Декоративные сердечки
+    for (int i = 0; i < 5; i++) {
+        Object heart;
+        heart.render = Render(ctx, "Assets/heart.png", {40.0f, 40.0f});
+        heart.position = {50.0f + i * 100.0f, ctx.screen_size.y - 60.0f};
+        game_scene.push_back(heart);
+    }
+}
+
+//Задание DrawStatus.
+void DrawStatus(Context &ctx) {}
+
 // Функция рисует панель сверху экрана со статусом игры. Свобода фантазии!
 //
 // В самой панели должны отображаться следующие параметры:
@@ -656,26 +671,4 @@ void ConstructMenuScene(Context &ctx, Scene &game_scene) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void DrawStatus(Context &ctx) {
-    int sw = (int)ctx.screen_size.x;
-    int sh = 50;
-    DrawRectangle(0, 0, sw, sh, Color{30, 30, 30, 255});
-    Texture heart_texture = ctx.textures_storage[ctx.heart->hash];
-    int heart_x = 15;
-    int heart_y = 10;
-    int heart_step = int(ctx.heart->width) + 8;
-
-    for (int i = 0; i < ctx.lives; i++) {
-        DrawTexture(heart_texture, heart_x + i * heart_step, heart_y, Color{255, 255, 255, 255});
-    }
-    std::string score_text = "Score: " + std::to_string(ctx.score);
-    DrawText(score_text.c_str(), 250, 15, 20, Color{255, 255, 255, 255});
-    int milli_seconds = ctx.time;
-    int seconds = (milli_seconds / 1000) % 60;
-    int minutes = milli_seconds / 60000;
-
-    std::string time_text = (seconds < 10) ? "Time: " + std::to_string(minutes) + ":0" + std::to_string(seconds) : "Time: " + std::to_string(minutes) + ":" + std::to_string(seconds);
-
-    int tw = MeasureText(time_text.c_str(), 24);
-    DrawText(time_text.c_str(), sw - tw - 20, 15, 20, Color{255, 255, 255, 255});
-}
+    
