@@ -24,7 +24,28 @@
 // Ваше решение может сильно отличаться.
 //
 Collision CheckCollision(Object &obj1, Object &obj2) {
-    return Collision{};
+    double dx = obj2.position.x - obj1.position.x, dy = obj2.position.y - obj1.position.y;
+    double w1 = obj1.collider.width;
+    double h1 = obj1.collider.height;
+    double w2 = obj2.collider.width;
+    double h2 = obj2.collider.height;
+    double halfWidthSum = (w1 + w2) / 2.0f;
+    double halfHeightSum = (h1 + h2) / 2.0f;
+
+    double qx = std::abs(dx) - halfWidthSum;
+    double qy = std::abs(dy) - halfHeightSum;
+
+    Collision result;
+    if (qx < 0 && qy < 0) {
+	    result.exists = true;
+	    result.overlap.x = std::abs(qx);
+	    result.overlap.y = std::abs(qy);  
+    } else {
+	    result.exists = false;
+	    result.overlap.x = 0;
+	    result.overlap.y = 0;
+    }
+    return result;
 }
 
 // Задание SolveCollision.
@@ -47,7 +68,26 @@ Collision CheckCollision(Object &obj1, Object &obj2) {
 // Возможное решение может занимать примерно 14-20 строк.
 // Ваше решение может сильно отличаться.
 //
-void SolveCollision(Object &obj, Collision c, float dt) {}
+void SolveCollision(Object &obj, Collision c, float dt) {
+    if (c.exists) {
+        if (std::abs(c.overlap.x) > std::abs(c.overlap.y)) {
+            obj.position.x-=c.overlap.x;
+        }
+        else {
+            obj.position.y-=c.overlap.y;
+        }
+        if (c.overlap.y > 0) {
+            obj.physics.speed.y = 0;
+        }
+        if (c.overlap.y < 0) {
+            obj.physics.acceleration.y = 0;
+            if (obj.physics.speed.y < 0) {
+                obj.physics.can_jump = true;
+                obj.physics.speed.y = 0;
+            }
+        }
+    }
+}
 
 // Задание FixCollisions.
 //
@@ -83,7 +123,20 @@ void SolveCollision(Object &obj, Collision c, float dt) {}
 // Возможное решение может занимать примерно 14-20 строк.
 // Ваше решение может сильно отличаться.
 //
-void FixCollisions(Scene &scene, float dt) {}
+void FixCollisions(Scene &scene, float dt) {
+    for (Object &obj1 : scene) {
+        if (obj1.collider.enabled && obj1.collider.of_type(ColliderType::DYNAMIC)) {
+            for (Object &obj2 : scene) {
+                if (obj1 != obj2 && obj2.collider.enabled && (obj2.collider.of_type(ColliderType::DYNAMIC) || obj2.collider.of_type(ColliderType::STATIC))){
+                Collision collision = CheckCollision(obj1, obj2);
+                if (collision.exists) {
+                    SolveCollision(obj1, collision, dt);
+                   }
+                }
+            }
+        }
+    }
+}
 
 // Задание ApplyGravity.
 //
@@ -165,7 +218,12 @@ void MakeJump(Object &obj, float dt) {
 // Возможное решение может занимать примерно 5 строк.
 // Ваше решение может сильно отличаться.
 //
-void MoveCameraTowards(Context &ctx, Object &obj, float dt) {}
+void MoveCameraTowards(Context &ctx, Object &obj, float dt) {
+	const auto v = obj.position - ctx.camera_pos;
+	if (Vector2Length(v) > 2.0f) {
+		ctx.camera_pos += v * 1.5 * dt;
+	}
+}
 
 // Задание CheckPlayerDeath.
 //
@@ -208,6 +266,11 @@ bool CheckPlayerDeath(Object &player, Scene &scene) {
 // Ваше решение может сильно отличаться.
 //
 bool CheckFinish(Object &player, Scene &scene) {
+    for (auto &obj : scene) {
+        if (obj.finish.enabled && CheckCollision(player, obj).exists) {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -239,7 +302,21 @@ bool CheckFinish(Object &player, Scene &scene) {
 // Возможное решение может занимать примерно 16-20 строк.
 // Ваше решение может сильно отличаться.
 //
-void EnemyAI(Object &enemy, Scene &scene, float dt) {}
+void EnemyAI(Object &enemy, Scene &scene, float dt) {
+    Object *player = find_player(scene);
+
+    if (!player) {
+        return;
+    }
+
+    float move = enemy.enemy.speed * dt;
+
+    if (enemy.position.x > player->position.x) {
+        enemy.position.x -= move;
+    } else {
+        enemy.position.x += move;
+    }
+}
 
 // Задание PlayerControl.
 //
@@ -404,7 +481,17 @@ void KillEnemies(Context &ctx) {}
 //
 // Возможное решение может занимать примерно 6-8 строк.
 //
-void ApplyOnDeath(Context &ctx, Object &obj) {}
+void ApplyOnDeath(Context &ctx, Object &obj) {
+    if (obj.player.enabled) {
+       Sound sound_death = LoadSound("Assets/Sounds/death.mp3");
+       PlaySound(sound_death);
+       UnloadSound(sound_death);
+    } else if (obj.enemy.enabled) {
+        Sound sound_death = LoadSound("Assets/Sounds/enemy_death.mp3");
+        PlaySound(sound_death);
+        UnloadSound(sound_death);
+    }
+}
 
 // Задание ApplyOnSpawn.
 //
@@ -497,7 +584,15 @@ void DrawGameOverScreen(Context &ctx) {}
 //
 // Возможное решение может занимать примерно N строк.
 //
-void DrawFinishScreen(Context &ctx) {}
+void DrawFinishScreen(Context& ctx){
+    const char* text = "LEVEL COMPLETE!";
+    float fontSize = 40.0f;
+    float textWidth = (float)MeasureText(text, (int)fontSize);
+    float x = ctx.screen_size.x / 2.0f - textWidth / 2.0f;
+    float y = ctx.screen_size.y / 2.0f - fontSize / 2.0f;
+    DrawRectangle(0, 0, ctx.screen_size.x, ctx.screen_size.y, BLACK);
+    DrawText(text, (int)x, (int)y, (int)fontSize, WHITE);
+}
 
 // Задание DrawMainScreen.
 //
