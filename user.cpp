@@ -626,9 +626,9 @@ void DrawGameOverScreen(Context &ctx) {
         Color{220, 220, 220, 255}
     );
 
-    float timeInSeconds = ctx.time / 1000.0f;
-    int minutes = (int) (timeInSeconds / 60);
-    int seconds = (int) (timeInSeconds % 60);
+    int totalSeconds = ctx.time / 1000;
+    int minutes = totalSeconds / 60;
+    int seconds = totalSeconds % 60;
     const char *timeText
         = TextFormat("Time Survived: %02d:%02d", minutes, seconds);
     int timeSize = 24;
