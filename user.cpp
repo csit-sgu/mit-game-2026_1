@@ -539,7 +539,15 @@ void ApplyOnDeath(Context &ctx, Object &obj) {
 // Возможное решение может занимать примерно 3 строки.
 //
 void ApplyOnSpawn(Context &ctx, Object &obj) {}
+    (void)ctx;
 
+    if (!obj.bullet.enabled) {
+        return;
+    }
+
+    static Sound shotSound = LoadSound("Assets/Sounds/shot.mp3);
+    PlaySound(shotSound);
+}
 // Задание DrawDeathScreen.
 //
 // Данная функция выполняется когда игрок умер от прикосновения к противнику. В
