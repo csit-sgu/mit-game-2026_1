@@ -593,7 +593,67 @@ void DrawDeathScreen(Context &ctx) {
 //
 // Возможное решение может занимать примерно N строк.
 //
-void DrawGameOverScreen(Context &ctx) {}
+void DrawGameOverScreen(Context &ctx) {
+    int sw = (int) ctx.screen_size.x;
+    int sh = (int) ctx.screen_size.y;
+
+    DrawRectangle(0, 0, sw, sh, Color{0, 0, 0, 220});
+
+    DrawRectangle(sw / 2 - 250, sh / 2 - 150, 500, 300, Color{30, 30, 30, 230});
+    DrawRectangleLines(
+        sw / 2 - 250, sh / 2 - 150, 500, 300, Color{150, 50, 50, 255}
+    );
+
+    const char *title = "GAME OVER";
+    int titleSize = 64;
+    int titleWidth = MeasureText(title, titleSize);
+    DrawText(
+        title,
+        (sw - titleWidth) / 2,
+        sh / 2 - 100,
+        titleSize,
+        Color{200, 30, 30, 255}
+    );
+
+    const char *scoreText = TextFormat("Final Score: %d", ctx.score);
+    int scoreSize = 28;
+    int scoreWidth = MeasureText(scoreText, scoreSize);
+    DrawText(
+        scoreText,
+        (sw - scoreWidth) / 2,
+        sh / 2 - 20,
+        scoreSize,
+        Color{220, 220, 220, 255}
+    );
+
+    int totalSeconds = ctx.time / 1000;
+    int minutes = totalSeconds / 60;
+    int seconds = totalSeconds % 60;
+    const char *timeText
+        = TextFormat("Time Survived: %02d:%02d", minutes, seconds);
+    int timeSize = 24;
+    int timeWidth = MeasureText(timeText, timeSize);
+    DrawText(
+        timeText,
+        (sw - timeWidth) / 2,
+        sh / 2 + 30,
+        timeSize,
+        Color{180, 180, 180, 255}
+    );
+
+    if (fmod(GetTime(), 0.8) < 0.4) {
+        const char *restartHint = "Press ENTER to return to menu";
+        int hintSize = 22;
+        int hintWidth = MeasureText(restartHint, hintSize);
+        DrawText(
+            restartHint,
+            (sw - hintWidth) / 2,
+            sh / 2 + 100,
+            hintSize,
+            Color{200, 200, 100, 255}
+        );
+    }
+}
 
 // Задание DrawFinishScreen.
 //
